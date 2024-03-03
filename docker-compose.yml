@@ -1,0 +1,29 @@
+version: "3"
+services:
+  flask-app:
+    build: .
+    ports:
+      - 2000:5000
+    environment:
+      - MONGO_DBNAME=SnapCook
+      - MONGO_URI=mongodb+srv://nameless:nameless@snapcook.ialrfj9.mongodb.net/?retryWrites=true&w=majority&appName=SnapCook
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_PORT=5000
+    env_file:
+      - info.env
+    depends_on:
+      - mongodb
+
+  mongodb:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=nameless
+      - MONGO_INITDB_ROOT_PASSWORD=nameless
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  mongodb-data:

@@ -7,6 +7,8 @@ name = "pypi"
 flask = "*"
 pymongo = "*"
 python-dotenv = "*"
+flask-login = "*"
+itsdangerous = "*"
 
 [dev-packages]
 
