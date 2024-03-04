@@ -8,7 +8,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = "namelessSecretKey"
 
+'''
+MongoDB Connection
+'''
 databaseConnection = pymongo.MongoClient("mongodb+srv://nameless:nameless@snapcook.ialrfj9.mongodb.net/?retryWrites=true&w=majority&appName=SnapCook")
 database = databaseConnection["SnapCook"]
 #databaseConnection = pymongo.MongoClient(os.getenv("MONGO_URI"))
@@ -26,38 +30,25 @@ except Exception as e:
     # the ping command failed, so the connection is not available.
     print(" * MongoDB connection error:", e)  # debug
 
-@app.route('/')
-def login():
-    return render_template('login.html')
-
-@app.route('/signup')
-def signUp():
-    return render_template('signUp.html')
 
 
 
-'''
-@app.route('/')
-def index():
-    if 'username' in session:
-        return 'Logged in as {session["username"]}'
-    return redirect(url_for('login'))
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = users.find_one({'username': username, 'password':password})
+        user = users.find_one({'username': username, 'password': password})
 
         if user:
             session['username'] = user['username']
             return redirect(url_for('home'))
         else:
-            return 'Invalid username or password'
+            return redirect(url_for('invalidLogin'))
     return render_template('login.html')
 
-@app.route('/signUp', methods=['POST'])
+@app.route('/SignUp', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
         username = request.form['username']
@@ -67,15 +58,18 @@ def signUp():
             users.insert_one({'username': username, 'password': password})
             return redirect(url_for('login'))
         else:
-            return 'Username already exists'
+            return redirect(url_for('invalidSignUp'))
     return render_template('signUp.html')
 
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
+@app.route('/InvalidLogin')
+def invalidLogin():
+    return render_template('invalidLogin.html')
 
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/InvalidSignUp')
+def invalidSignUp():
+    return render_template('invalidSignUp.html')
+
+@app.route('/Home', methods=['GET', 'POST'])
 def home():
     search_results = None
     if request.method == 'POST':
@@ -84,20 +78,12 @@ def home():
     items = recipes.find()
     return render_template('home.html', items=items, search_results=search_results)
 
-@app.route('/myFridge', method=['GET'])
+@app.route('/Fridge', methods=['GET'])
 def myFridge():
     items = fridge.find()
     return render_template('myFridge.html', items=items)
 
-@app.route('/deleteIng', methods=['POST'])
-def deleteIngredient():
-    itemName = request.form.get('name')
-    if itemName:
-        fridge.delete_one({'name': itemName})
-        return redirect(url_for('myFridge'))
-    return 'item name not provided', 400
-
-@app.route('/cameraScanner', methods=['POST'])
+@app.route('/Camera', methods=['GET', 'POST'])
 def cameraScanner():
     name = request.form.get('name')
     dateAcquired = datetime.datetime.now()
@@ -110,6 +96,31 @@ def cameraScanner():
         redirect(url_for('manualEntry'))
     return render_template('cameraScanner.html')
 
+
+
+
+'''
+@app.route('/')
+def index():
+    if 'username' in session:
+        return 'Logged in as {session["username"]}'
+    return redirect(url_for('login'))
+    
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
+IDEALLY SOMEWHERE NEAR EACH INGREDIENT IN THE MY FRIDGE PAGE
+@app.route('/deleteIng', methods=['POST'])
+def deleteIngredient():
+    itemName = request.form.get('name')
+    if itemName:
+        fridge.delete_one({'name': itemName})
+        return redirect(url_for('myFridge'))
+    return 'item name not provided', 400
+
+GOES IN CAMERA SCANNER PAGE
 @app.route('/manualEntry', methods=['POST'])
 def manualEntry():
     name = request.form('name')
@@ -123,12 +134,14 @@ def manualEntry():
         return 'Missing arguments'
     return render_template('manualEntry.html')
 
+THIS IS THE PAGE THAT SHOWS AFTER YOU CLICK INTO A RECIPE
 @app.route('/recipePage', methods=['GET'])
 def recipePage():
     recipeItems = recipes.find()
     ingredients = fridge.find()
     return render_template('recipePage.html', recipeItems=recipeItems, ingredients=ingredients)
 
+BUY MISSING INGREDIENTS
 @app.route('/missingIngredients')
 def missingIngredients():
     return render_template('missingIngredients.html')
