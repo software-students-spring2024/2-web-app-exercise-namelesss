@@ -11,6 +11,8 @@ app = Flask(__name__)
 
 databaseConnection = pymongo.MongoClient("mongodb+srv://nameless:nameless@snapcook.ialrfj9.mongodb.net/?retryWrites=true&w=majority&appName=SnapCook")
 database = databaseConnection["SnapCook"]
+#databaseConnection = pymongo.MongoClient(os.getenv("MONGO_URI"))
+#database = databaseConnection[os.getenv("MONGO_DBNAME")]
 fridge = database["Fridge"]
 recipes = database["Recipes"]
 users = database["Users"]
@@ -24,11 +26,21 @@ except Exception as e:
     # the ping command failed, so the connection is not available.
     print(" * MongoDB connection error:", e)  # debug
 
+@app.route('/')
+def login():
+    return render_template('login.html')
 
+@app.route('/signup')
+def signUp():
+    return render_template('signUp.html')
+
+
+
+'''
 @app.route('/')
 def index():
     if 'username' in session:
-        return f'Logged in as {session["username"]}'
+        return 'Logged in as {session["username"]}'
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -121,5 +133,6 @@ def recipePage():
 def missingIngredients():
     return render_template('missingIngredients.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+*/
+'''

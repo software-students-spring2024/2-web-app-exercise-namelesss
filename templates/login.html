@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>SnapCook</title>
 </head>
 <body>
     <h2>Login</h2>
@@ -12,8 +12,8 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br><br>
         
-        <input type="submit" value="Login">
+        <input type="submit" value="Login"><br><br>
     </form>
-    <a href="/signup">Sign Up</a>
+    <a href="{{url_for('signUp')}}">Don't Have an Account? Sign Up</a>
 </body>
 </html>
