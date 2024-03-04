@@ -2,9 +2,27 @@
 <html>
 <head>
     <title>Invalid Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+        .invalid-signup {
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h3>Username already exists.</h3>
-    <a href="{{url_for('signUp')}}">Try Again</a>
+    <div class="container">
+        <div class="invalid-signup">
+            <h3 class="invalid-signup-heading">Username already exists.</h3>
+            <a class="btn btn-primary btn-block" href="{{url_for('signUp')}}">Try Again</a>
+        </div>
+    </div>
 </body>
 </html>
