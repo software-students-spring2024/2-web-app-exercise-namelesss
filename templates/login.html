@@ -2,18 +2,32 @@
 <html>
 <head>
     <title>SnapCook</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+        .form-login {
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <form method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <input type="submit" value="Login"><br><br>
-    </form>
-    <a href="{{url_for('signUp')}}">Don't Have an Account? Sign Up</a>
+    <div class="container">
+        <form class="form-login" method="POST">
+            <h2 class="form-login-heading">Please log in</h2>
+            <label for="username" class="sr-only">Username:</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus><br>
+            <label for="password" class="sr-only">Password:</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required><br>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+            <a href="{{url_for('signUp')}}">Don't Have an Account? Sign Up</a>
+        </form>
+    </div>
 </body>
 </html>
