@@ -21,6 +21,12 @@
     <div class="container">
         <div class="camera-scanner">
             <h2 class="camera-scanner-heading">Camera Scanner Page</h2>
+            <p>Use your camera to scan the items you have:</p>
+            <form method="POST">
+                <label for="cameraInput" class="sr-only">Camera Input:</label>
+                <input type="file" id="cameraInput" name="cameraInput" accept="image/*" capture="camera" class="form-control" required autofocus><br>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Scan Item</button>
+            </form>
         </div>
     </div>
 </body>
