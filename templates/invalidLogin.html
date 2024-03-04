@@ -2,9 +2,27 @@
 <html>
 <head>
     <title>Invalid Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+        .invalid-login {
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h3>Invalid username or password.</h3>
-    <a href="{{url_for('login')}}">Try Again</a>
+    <div class="container">
+        <div class="invalid-login">
+            <h3 class="invalid-login-heading">Invalid username or password.</h3>
+            <a class="btn btn-primary btn-block" href="{{url_for('login')}}">Try Again</a>
+        </div>
+    </div>
 </body>
 </html>
