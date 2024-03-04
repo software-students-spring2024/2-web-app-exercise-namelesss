@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Home Page</title>
-	</head>
-
-	<body>
-		<p>This is the home page!</p>
-		<br>
-		<br>
-		<a href="{{url_for('myFridge')}}">My Fridge</a>
-		<a href="{{url_for('cameraScanner')}}">Camera Scanner</a>
-	<a href="{{url_for('login')}}">Logout</a>
-	</body>
+<head>
+    <title>Home Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+        .home-page {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="home-page">
+            <h2 class="home-page-heading">This is the home page!</h2>
+            <a class="btn btn-primary btn-block" href="{{url_for('myFridge')}}">My Fridge</a>
+            <a class="btn btn-primary btn-block" href="{{url_for('cameraScanner')}}">Camera Scanner</a>
+            <a class="btn btn-primary btn-block" href="{{url_for('login')}}">Logout</a>
+        </div>
+    </div>
+</body>
 </html>
