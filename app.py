@@ -80,7 +80,7 @@ def home():
 
 @app.route('/Fridge', methods=['GET'])
 def myFridge():
-    items = fridge.find()
+    items = fridge.find().sort("estimatedExpiration")
     return render_template('myFridge.html', items=items)
 
 @app.route('/Camera', methods=['GET', 'POST'])
