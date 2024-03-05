@@ -8,9 +8,14 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 330px;
+            max-width: 90%;
             padding: 15px;
             margin: auto;
+        }
+        @media (min-width: 576px) {
+            .container {
+                max-width: 540px;
+            }
         }
         .fridge-page {
             margin-top: 50px;
@@ -21,15 +26,22 @@
     <div class="container">
         <div class="fridge-page">
             <h2 class="fridge-page-heading">My Fridge</h2>
-            <ul>
-                <li>Milk</li>
-                <li>Eggs</li>
-                <li>Butter</li>
-                <li>Carrots</li>
-                <li>Apples</li>
-            <ul>
-            <p>Friendly Reminder: Use or replace items before they expire!</p>
+            {% for item in items %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ item.name }}
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Quantity: {{ item.quantity }} {{ item.unit }}</li>
+                    <li class="list-group-item">Estimated Expiration: {{ item.estimatedExpiration.strftime('%Y-%m-%d') }}</li>
+                </ul>
+            </div>
+            {% endfor %}
+            <div class="alert alert-primary" role="alert">
+                Friendly Reminder: Use or replace items before they expire!
+            </div>
         </div>
     </div>
 </body>
 </html>
+
