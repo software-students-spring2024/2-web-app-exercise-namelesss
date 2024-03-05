@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.utils import secure_filename
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import pymongo
 from bson.objectid import ObjectId
 import datetime
@@ -9,7 +10,11 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "namelessSecretKey"
+app.config['UPLOAD_FOLDER'] = 'uploads'  # project relative path
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 '''
 MongoDB Connection
 '''
@@ -85,15 +90,26 @@ def myFridge():
 
 @app.route('/Camera', methods=['GET', 'POST'])
 def cameraScanner():
-    name = request.form.get('name')
-    dateAcquired = datetime.datetime.now()
-    estimatedExpiration = datetime.strptime(request.form.get('expiration'),'%Y-%m-%d')
-    quantity = request.form.get('quantity')
-    unit = request.form.get('unit')
-    if name and dateAcquired and estimatedExpiration and quantity and unit:
-        fridge.insert_one({'name':name, 'dateAcquired':dateAcquired, 'estimatedExpiration':estimatedExpiration, 'quantity':quantity, 'unit':unit})
-    else:
-        redirect(url_for('manualEntry'))
+    if request.method == 'POST':
+        if 'cameraInput' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['cameraInput']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        name = request.form.get('name')
+        dateAcquired = datetime.datetime.now()
+        estimatedExpiration = datetime.datetime.strptime(request.form.get('expiration'),'%Y-%m-%d')
+        quantity = request.form.get('quantity')
+        unit = request.form.get('unit')
+        if name and dateAcquired and estimatedExpiration and quantity and unit:
+            fridge.insert_one({'name':name, 'dateAcquired':dateAcquired, 'estimatedExpiration':estimatedExpiration, 'quantity':quantity, 'unit':unit})
+        else:
+            return redirect(url_for('manualEntry'))
     return render_template('cameraScanner.html')
 
 
