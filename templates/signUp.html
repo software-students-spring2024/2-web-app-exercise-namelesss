@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Sign Up</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         body {
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 330px;
+            max-width: 75%;
             padding: 15px;
             margin: auto;
         }
@@ -18,13 +19,11 @@
 </head>
 <body>
     <div class="container">
-        <form class="form-signin" action="" method="post">
-            <h2 class="form-signin-heading">Please sign up</h2>
-            <label for="inputEmail" class="sr-only">Email address</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <h2 class="form-signin-heading">Please sign up</h2>
+        <form class="form-signin" action="" method="POST">
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username (case sensitive)" required autofocus>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up">
             <a href="{{url_for('login')}}">Already Have an Account? Log In</a>
         </form>
     </div>
