@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Ingredient</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 50%;
+            padding: 50px;
+            margin: auto;
+        }
+        .recipe {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
+    <div class="container">
+        <div class="edit-item">
+            <h2 class="edit-item-heading">Edit Ingredient</h2>
+            <h5 class="current-values">Here is your current [INGREDIENT NAME] information:</h5>
+            <p><strong>Date Acquired:</strong> [INFO]</p>
+            <p><strong>Estimated Expiration:</strong> [INFO]</p>
+            <p><strong>Quantity:</strong> [INFO]</p>
+
+            <h5 class="input-values">Please Update the values below:</h5>
+            <form method="POST" action="{{ url_for('editIngredient') }}">
+                <label for="estimatedExpiration" class="sr-only">Estimated Expiration:</label>
+				<input type="date" id="estimatedExpiration" name="estimatedExpiration" class="form-control" placeholder="Estimated Expiration" required><br>
+                <label for="quantity" class="sr-only">Quantity:</label>
+				<input type="number" step="0.01" id="quantity" name="quantity" class="form-control" placeholder="Quantity" required><br>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+</body>

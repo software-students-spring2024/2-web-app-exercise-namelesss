@@ -153,6 +153,17 @@ def recipePage(recipe_id):
     except Exception as e:
         print("Error occurred:", str(e))
         return "An error occurred while processing the request"
+    
+
+@app.route('/itemPage', methods=['GET'])
+def itemPage() :
+    try:
+        itemName = request.form.get('name')
+        item = fridge.find_one({"name" : itemName})
+        return render_template('itemPage.html', item=item)
+    except Exception as e:
+        print("Error occurred:", str(e))
+        return "An error occurred while processing the request"
 
 
 @app.route('/deleteIng', methods=['POST'])
@@ -160,6 +171,17 @@ def deleteIngredient():
     itemName = request.form.get('name')
     if itemName:
         fridge.delete_one({'name': itemName})
+        return redirect(url_for('myFridge'))
+    else:
+        return 'item name not provided', 400
+
+
+@app.route('/editCount', methods=['POST'])
+def editIngredient():
+    itemName = request.form.get('name')
+    newCount = float(request.form.get('quantity'))
+    if itemName:
+        fridge.update_one({'name' : itemName}, {'$set': {'quantity' : newCount}})
         return redirect(url_for('myFridge'))
     else:
         return 'item name not provided', 400
@@ -188,3 +210,6 @@ def datetime_format(value):
     if value is None:
         return 'N/A'
     return value.strftime('%Y-%m-%d')
+
+if __name__ == "__main__":
+    app.run(debug=True)
