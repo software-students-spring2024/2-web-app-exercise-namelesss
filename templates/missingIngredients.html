@@ -8,7 +8,7 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 330px;
+            max-width: 75%;
             padding: 15px;
             margin: auto;
         }
@@ -18,18 +18,22 @@
     </style>
 </head>
 <body>
+	<a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
     <div class="container">
         <div class="buy-ingredients">
             <h2 class="buy-ingredients-heading">SnapCook</h2>
             <p>Here are the ingredients you need to buy:</p>
-            <ul>
-                <li>Milk</li>
-                <li>Eggs</li>
-                <li>Butter</li>
-                <li>Carrots</li>
-                <li>Apples</li>
-            </ul>    
-            </p>Friendly Reminder: Check off items as you buy them!</p>
+            <form>
+                <ul>
+                    {% for ingredient in missing_ingredients %}
+                        <li>
+                            <input type="checkbox" id="{{ ingredient }}" name="{{ ingredient }}">
+                            <label for="{{ ingredient }}">{{ ingredient }}</label>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p>Friendly Reminder: Check off items as you buy them!</p>
+            </form>
         </div>
     </div>
 </body>

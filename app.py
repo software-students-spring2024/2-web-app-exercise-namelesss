@@ -13,10 +13,11 @@ app.secret_key = "namelessSecretKey"
 '''
 MongoDB Connection
 '''
-databaseConnection = pymongo.MongoClient("mongodb+srv://nameless:nameless@snapcook.ialrfj9.mongodb.net/?retryWrites=true&w=majority&appName=SnapCook")
+databaseConnection = pymongo.MongoClient(
+    "mongodb+srv://nameless:nameless@snapcook.ialrfj9.mongodb.net/?retryWrites=true&w=majority&appName=SnapCook")
 database = databaseConnection["SnapCook"]
-#databaseConnection = pymongo.MongoClient(os.getenv("MONGO_URI"))
-#database = databaseConnection[os.getenv("MONGO_DBNAME")]
+# databaseConnection = pymongo.MongoClient(os.getenv("MONGO_URI"))
+# database = databaseConnection[os.getenv("MONGO_DBNAME")]
 fridge = database["Fridge"]
 recipes = database["Recipes"]
 users = database["Users"]
@@ -29,9 +30,6 @@ try:
 except Exception as e:
     # the ping command failed, so the connection is not available.
     print(" * MongoDB connection error:", e)  # debug
-
-
-
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -48,6 +46,7 @@ def login():
             return redirect(url_for('invalidLogin'))
     return render_template('login.html')
 
+
 @app.route('/SignUp', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
@@ -61,91 +60,131 @@ def signUp():
             return redirect(url_for('invalidSignUp'))
     return render_template('signUp.html')
 
+
 @app.route('/InvalidLogin')
 def invalidLogin():
     return render_template('invalidLogin.html')
 
+
 @app.route('/InvalidSignUp')
 def invalidSignUp():
     return render_template('invalidSignUp.html')
+
 
 @app.route('/Home', methods=['GET', 'POST'])
 def home():
     search_results = None
     if request.method == 'POST':
         search_term = request.form.get('search_term')
-        search_results = recipes.find({"searchField": search_term})
+        search_results = recipes.find({"$or": [
+            {"recipeName": {"$regex": search_term, "$options": "i"}},
+            {"ingredients": {"$regex": search_term, "$options": "i"}}
+        ]})
     items = recipes.find()
     return render_template('home.html', items=items, search_results=search_results)
+
 
 @app.route('/Fridge', methods=['GET'])
 def myFridge():
     items = fridge.find()
     return render_template('myFridge.html', items=items)
 
+
 @app.route('/Camera', methods=['GET', 'POST'])
 def cameraScanner():
-    name = request.form.get('name')
-    dateAcquired = datetime.datetime.now()
-    estimatedExpiration = datetime.strptime(request.form.get('expiration'),'%Y-%m-%d')
-    quantity = request.form.get('quantity')
-    unit = request.form.get('unit')
-    if name and dateAcquired and estimatedExpiration and quantity and unit:
-        fridge.insert_one({'name':name, 'dateAcquired':dateAcquired, 'estimatedExpiration':estimatedExpiration, 'quantity':quantity, 'unit':unit})
-    else:
-        redirect(url_for('manualEntry'))
+    if request.method == 'POST':
+        try:
+            name = request.form.get('name')
+            dateAcquired = datetime.datetime.now()
+            estimatedExpiration = datetime.datetime.strptime(request.form.get('expiration'), '%Y-%m-%d')
+            quantity = float(request.form.get('quantity'))
+            unit = request.form.get('unit')
+            photo = request.files.get('photo')
+
+            if name and dateAcquired and estimatedExpiration and quantity and unit:
+                fridge.insert_one({
+                    'name': name,
+                    'dateAcquired': dateAcquired,
+                    'estimatedExpiration': estimatedExpiration,
+                    'quantity': quantity,
+                    'unit': unit
+                })
+                return redirect(url_for('myFridge'))
+            else:
+                return redirect(url_for('manualEntry'))
+        except Exception as e:
+            print("Error occurred:", str(e))
+            return "An error occurred while processing the request"
     return render_template('cameraScanner.html')
 
 
+@app.route('/manualEntry', methods=['GET', 'POST'])
+def manualEntry():
+    if request.method == 'POST':
+        try:
+            name = request.form.get('name')
+            dateAcquired = datetime.datetime.now()
+            estimatedExpiration = datetime.datetime.strptime(request.form.get('estimatedExpiration'), '%Y-%m-%d')
+            quantity = float(request.form.get('quantity'))
+            unit = request.form.get('unit')
+
+            if name and estimatedExpiration and quantity and unit:
+                fridge.insert_one({
+                    'name': name,
+                    'dateAcquired': dateAcquired,
+                    'estimatedExpiration': estimatedExpiration,
+                    'quantity': quantity,
+                    'unit': unit
+                })
+                return redirect(url_for('myFridge'))
+            else:
+                return 'Missing arguments'
+        except Exception as e:
+            print("Error occurred:", str(e))
+            return "An error occurred while processing the request"
+    return render_template('manualEntry.html')
 
 
-'''
-@app.route('/')
-def index():
-    if 'username' in session:
-        return 'Logged in as {session["username"]}'
-    return redirect(url_for('login'))
-    
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('login'))
+@app.route('/recipePage/<recipe_id>', methods=['GET'])
+def recipePage(recipe_id):
+    try:
+        recipe = recipes.find_one({"_id": ObjectId(recipe_id)})
+        return render_template('recipePage.html', recipe=recipe)
+    except Exception as e:
+        print("Error occurred:", str(e))
+        return "An error occurred while processing the request"
 
-IDEALLY SOMEWHERE NEAR EACH INGREDIENT IN THE MY FRIDGE PAGE
+
 @app.route('/deleteIng', methods=['POST'])
 def deleteIngredient():
     itemName = request.form.get('name')
     if itemName:
         fridge.delete_one({'name': itemName})
         return redirect(url_for('myFridge'))
-    return 'item name not provided', 400
-
-GOES IN CAMERA SCANNER PAGE
-@app.route('/manualEntry', methods=['POST'])
-def manualEntry():
-    name = request.form('name')
-    dateAcquired = datetime.datetime.now()
-    estimatedExpiration = datetime.strptime(request.form('expiration'),'%Y-%m-%d')
-    quantity = request.form('quantity')
-    unit = request.form('unit')
-    if name and dateAcquired and estimatedExpiration and quantity and unit:
-        fridge.insert_one({'name':name, 'dateAcquired':dateAcquired, 'estimatedExpiration':estimatedExpiration, 'quantity':quantity, 'unit':unit})
     else:
-        return 'Missing arguments'
-    return render_template('manualEntry.html')
-
-THIS IS THE PAGE THAT SHOWS AFTER YOU CLICK INTO A RECIPE
-@app.route('/recipePage', methods=['GET'])
-def recipePage():
-    recipeItems = recipes.find()
-    ingredients = fridge.find()
-    return render_template('recipePage.html', recipeItems=recipeItems, ingredients=ingredients)
-
-BUY MISSING INGREDIENTS
-@app.route('/missingIngredients')
-def missingIngredients():
-    return render_template('missingIngredients.html')
+        return 'item name not provided', 400
 
 
-*/
-'''
+@app.route('/missingIngredients/<recipe_id>')
+def missingIngredients(recipe_id):
+    recipe = recipes.find_one({"_id": ObjectId(recipe_id)})
+    fridge_items = fridge.find()
+
+    missing_ingredients = []
+    for ingredient in recipe['ingredients']:
+        found = False
+        for item in fridge_items:
+            if item['name'].lower() == ingredient.lower():
+                found = True
+                break
+        if not found:
+            missing_ingredients.append(ingredient)
+
+    return render_template('missingIngredients.html', missing_ingredients=missing_ingredients)
+
+
+@app.template_filter('datetime_format')
+def datetime_format(value):
+    if value is None:
+        return 'N/A'
+    return value.strftime('%Y-%m-%d')

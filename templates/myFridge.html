@@ -8,27 +8,57 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 330px;
+            max-width: 75%;
             padding: 15px;
             margin: auto;
         }
         .fridge-page {
             margin-top: 50px;
         }
+        .item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        section {
+            width: 90%;
+            margin:auto;
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:space-between;
+        }
+        .item {
+            width:49%;
+            border:1px solid #ccc;
+            position:relative;
+        }
+        .fridge-page {
+            text-align:center;
+        }
     </style>
 </head>
 <body>
+    <a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
     <div class="container">
         <div class="fridge-page">
             <h2 class="fridge-page-heading">My Fridge</h2>
-            <ul>
-                <li>Milk</li>
-                <li>Eggs</li>
-                <li>Butter</li>
-                <li>Carrots</li>
-                <li>Apples</li>
-            <ul>
+            <section>
+                {% for item in items %}
+                    <div class="item">
+                        <h4>{{ item.name }}</h4>
+                        <p><strong>Date Acquired:</strong> {{ item.dateAcquired|datetime_format }}</p>
+                        <p><strong>Estimated Expiration:</strong> {{ item.estimatedExpiration|datetime_format }}</p>
+                        <p><strong>Quantity:</strong> {{ item.quantity }} {{ item.unit }}</p>
+                        <form action="{{ url_for('deleteIngredient') }}" method="POST">
+                            <input type="hidden" name="name" value="{{ item.name }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </section>
             <p>Friendly Reminder: Use or replace items before they expire!</p>
+			<a href="{{ url_for('cameraScanner') }}" class="btn btn-success mt-3">Camera Scanner</a>
+			<a href="{{ url_for('manualEntry') }}" class="btn btn-success mt-3">Add Manually</a>
         </div>
     </div>
 </body>

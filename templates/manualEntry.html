@@ -8,7 +8,7 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 330px;
+            max-width: 75%;
             padding: 15px;
             margin: auto;
         }
@@ -18,15 +18,22 @@
     </style>
 </head>
 <body>
+	<a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
     <div class="container">
         <div class="manual-entry">
             <h2 class="manual-entry-heading">SnapCook</h2>
             <p>Here you can manually enter the items you have in your fridge:</p>
-            <form method="POST">
-                <label for="item" class="sr-only">Item:</label>
-                <input type="text" id="item" name="item" class="form-control" placeholder="Item" required autofocus><br>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Add Item</button>
-            </form>
+            <form method="POST" action="{{ url_for('manualEntry') }}">
+				<label for="name" class="sr-only">Name:</label>
+				<input type="text" id="name" name="name" class="form-control" placeholder="Name" required autofocus><br>
+				<label for="estimatedExpiration" class="sr-only">Estimated Expiration:</label>
+				<input type="date" id="estimatedExpiration" name="estimatedExpiration" class="form-control" placeholder="Estimated Expiration" required><br>
+				<label for="quantity" class="sr-only">Quantity:</label>
+				<input type="number" step="0.01" id="quantity" name="quantity" class="form-control" placeholder="Quantity" required><br>
+				<label for="unit" class="sr-only">Unit:</label>
+				<input type="text" id="unit" name="unit" class="form-control" placeholder="Unit" required><br>
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Add Item</button>
+			</form>
         </div>
     </div>
 </body>

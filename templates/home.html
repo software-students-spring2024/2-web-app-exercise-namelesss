@@ -15,15 +15,47 @@
         .home-page {
             margin-top: 50px;
         }
+        .recipe {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="home-page">
             <h2 class="home-page-heading">Welcome!</h2>
-            <a class="btn btn-primary btn-block" href="{{url_for('myFridge')}}">My Fridge</a>
-            <a class="btn btn-primary btn-block" href="{{url_for('cameraScanner')}}">Camera Scanner</a>
-            <a class="btn btn-primary btn-block" href="{{url_for('login')}}">Logout</a>
+            <form action="{{ url_for('home') }}" method="POST" class="mb-3">
+                <div class="input-group">
+                    <input type="text" name="search_term" class="form-control" placeholder="Search recipes...">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+            <div class="mb-3">
+                <a class="btn btn-primary btn-block" href="{{ url_for('myFridge') }}">My Fridge</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('cameraScanner') }}">Camera Scanner</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('login') }}">Logout</a>
+            </div>
+            <h3>Recipes</h3>
+            {% if search_results %}
+                {% for recipe in search_results %}
+                    <div class="recipe" onclick="location.href='{{ url_for('recipePage', recipe_id=recipe._id) }}'">
+                        <h4>{{ recipe.recipeName }}</h4>
+                        <p>Estimated Time for Preparation: {{ recipe.etp }} minutes</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% for recipe in items %}
+                    <div class="recipe" onclick="location.href='{{ url_for('recipePage', recipe_id=recipe._id) }}'">
+                        <h4>{{ recipe.recipeName }}</h4>
+                        <p>Estimated Time for Preparation: {{ recipe.etp }} minutes</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </body>

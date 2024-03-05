@@ -18,9 +18,20 @@
     </style>
 </head>
 <body>
+	<a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
     <div class="container">
         <div class="recipe">
-            <h2 class="recipe-heading">SnapCook</h2>
+            <h2 class="recipe-heading">{{ recipe.recipeName }}</h2>
+            <p><strong>Estimated Time for Preparation:</strong> {{ recipe.etp }} minutes</p>
+            <h3>Ingredients</h3>
+            <ul>
+                {% for ingredient in recipe.ingredients %}
+                    <li>{{ ingredient }}</li>
+                {% endfor %}
+            </ul>
+            <h3>Instructions</h3>
+            <p>{{ recipe.Instruction }}</p>
+			<a href="{{ url_for('missingIngredients', recipe_id=recipe._id) }}" class="btn btn-primary">Buy Missing Ingredients</a>
         </div>
     </div>
 </body>
