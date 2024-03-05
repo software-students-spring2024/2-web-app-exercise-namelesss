@@ -22,12 +22,21 @@
         <div class="camera-scanner">
             <h2 class="camera-scanner-heading">Camera Scanner Page</h2>
             <p>Use your camera to scan the items you have:</p>
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <label for="cameraInput" class="sr-only">Camera Input:</label>
                 <input type="file" id="cameraInput" name="cameraInput" accept="image/*" capture="camera" class="form-control" required autofocus><br>
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name"><br>
+                <label for="quantity">Quantity:</label><br>
+                <input type="text" id="quantity" name="quantity"><br>
+                <label for="unit">Unit:</label><br>
+                <input type="text" id="unit" name="unit"><br>
+                <label for="expiration">Estimated Expiration (YYYY-MM-DD):</label><br>
+                <input type="text" id="expiration" name="expiration"><br>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Scan Item</button>
             </form>
         </div>
     </div>
 </body>
 </html>
+
