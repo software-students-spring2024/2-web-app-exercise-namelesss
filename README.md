@@ -10,7 +10,7 @@ efficient kitchen.
 
 ## User stories
 
-See instructions. Delete this line and place a link to the user stories here.
+User stories are located on the [Issues](https://github.com/software-students-spring2024/2-web-app-exercise-namelesss/issues) page, with the *user story* label.
 
 ## Task boards
 
