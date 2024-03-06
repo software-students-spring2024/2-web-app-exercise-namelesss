@@ -38,7 +38,25 @@
     </style>
 </head>
 <body>
-    <a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('home') }}">SnapCook</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('myFridge') }}">My Fridge</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('cameraScanner') }}">Add Item</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <div class="fridge-page">
             <h2 class="fridge-page-heading">My Fridge</h2>
@@ -49,18 +67,20 @@
                         <p><strong>Date Acquired:</strong> {{ item.dateAcquired|datetime_format }}</p>
                         <p><strong>Estimated Expiration:</strong> {{ item.estimatedExpiration|datetime_format }}</p>
                         <p><strong>Quantity:</strong> {{ item.quantity }} {{ item.unit }}</p>
-                        <form action="{{ url_for('deleteIngredient') }}" method="POST">
-                            <input type="hidden" name="name" value="{{ item.name }}">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                        <a href="{{ url_for('itemPage') }}" class="btn btn-secondary btn-sm">Edit Ingredient</a>
+                        <a href="#" class="btn btn-secondary btn-sm" onclick="openPopup('{{ item.name }}')">Edit Ingredient</a>
                     </div>
                 {% endfor %}
             </section>
             <p>Friendly Reminder: Use or replace items before they expire!</p>
-			<a href="{{ url_for('cameraScanner') }}" class="btn btn-success mt-3">Camera Scanner</a>
-			<a href="{{ url_for('manualEntry') }}" class="btn btn-success mt-3">Add Manually</a>
+            <a href="{{ url_for('cameraScanner') }}" class="btn btn-success mt-3">Camera Scanner</a>
+            <a href="{{ url_for('manualEntry') }}" class="btn btn-success mt-3">Add Manually</a>
         </div>
     </div>
+    <script>
+    function openPopup(itemName) {
+        var url = "{{ url_for('itemPage') }}?name=" + encodeURIComponent(itemName);
+        window.open(url, "_blank", "width=600,height=400");
+    }
+    </script>
 </body>
 </html>

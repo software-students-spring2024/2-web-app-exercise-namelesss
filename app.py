@@ -171,20 +171,25 @@ def deleteIngredient():
     itemName = request.form.get('name')
     if itemName:
         fridge.delete_one({'name': itemName})
-        return redirect(url_for('myFridge'))
+        return '<script>window.opener.location.reload(); window.close();</script>'
     else:
         return 'item name not provided', 400
 
 
-@app.route('/editCount', methods=['POST'])
-def editIngredient():
-    itemName = request.form.get('name')
-    newCount = float(request.form.get('quantity'))
-    if itemName:
-        fridge.update_one({'name' : itemName}, {'$set': {'quantity' : newCount}})
-        return redirect(url_for('myFridge'))
+@app.route('/itemPage', methods=['GET', 'POST'])
+def itemPage():
+    if request.method == 'POST':
+        itemName = request.form.get('name')
+        newExpiration = datetime.datetime.strptime(request.form.get('estimatedExpiration'), '%Y-%m-%d')
+        newQuantity = float(request.form.get('quantity'))
+        newUnit = request.form.get('unit')
+        if itemName:
+            fridge.update_one({'name': itemName}, {'$set': {'estimatedExpiration': newExpiration, 'quantity': newQuantity, 'unit': newUnit}})
+            return redirect(url_for('myFridge'))
     else:
-        return 'item name not provided', 400
+        itemName = request.args.get('name')
+        item = fridge.find_one({"name": itemName})
+        return render_template('itemPage.html', item=item)
 
 
 @app.route('/missingIngredients/<recipe_id>')
