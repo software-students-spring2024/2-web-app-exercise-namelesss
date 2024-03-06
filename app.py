@@ -155,17 +155,6 @@ def recipePage(recipe_id):
         return "An error occurred while processing the request"
     
 
-@app.route('/itemPage', methods=['GET'])
-def itemPage() :
-    try:
-        itemName = request.form.get('name')
-        item = fridge.find_one({"name" : itemName})
-        return render_template('itemPage.html', item=item)
-    except Exception as e:
-        print("Error occurred:", str(e))
-        return "An error occurred while processing the request"
-
-
 @app.route('/deleteIng', methods=['POST'])
 def deleteIngredient():
     itemName = request.form.get('name')
