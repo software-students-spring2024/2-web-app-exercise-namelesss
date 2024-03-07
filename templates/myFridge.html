@@ -35,32 +35,41 @@
         .fridge-page {
             text-align:center;
         }
+        nav {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
+    <nav>
+        <a class="btn btn-primary mt-3" href="{{ url_for('home') }}" style="width:32%">Home</a>
+        <a class="btn btn-primary mt-3" href="{{ url_for('myFridge') }}" style="width:32%">My Fridge</a>
+        <a class="btn btn-primary mt-3" href="{{ url_for('cameraScanner') }}" style="width:32%">Add Item</a>
+    </nav>
     <div class="container">
         <div class="fridge-page">
             <h2 class="fridge-page-heading">My Fridge</h2>
             <section>
                 {% for item in items %}
-                    <div class="item"> 
+                    <div class="item">
                         <h4>{{ item.name }}</h4>
                         <p><strong>Date Acquired:</strong> {{ item.dateAcquired|datetime_format }}</p>
                         <p><strong>Estimated Expiration:</strong> {{ item.estimatedExpiration|datetime_format }}</p>
                         <p><strong>Quantity:</strong> {{ item.quantity }} {{ item.unit }}</p>
-                        <form action="{{ url_for('deleteIngredient') }}" method="POST">
-                            <input type="hidden" name="name" value="{{ item.name }}">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                        <a href="{{ url_for('itemPage') }}" class="btn btn-secondary btn-sm">Edit Ingredient</a>
+                        <a href="#" class="btn btn-secondary btn-sm" onclick="openPopup('{{ item.name }}')">Edit Ingredient</a>
                     </div>
                 {% endfor %}
             </section>
             <p>Friendly Reminder: Use or replace items before they expire!</p>
-			<a href="{{ url_for('cameraScanner') }}" class="btn btn-success mt-3">Camera Scanner</a>
-			<a href="{{ url_for('manualEntry') }}" class="btn btn-success mt-3">Add Manually</a>
+            <a href="{{ url_for('cameraScanner') }}" class="btn btn-success mt-3">Camera Scanner</a>
+            <a href="{{ url_for('manualEntry') }}" class="btn btn-success mt-3">Add Manually</a>
         </div>
     </div>
+    <script>
+    function openPopup(itemName) {
+        var url = "{{ url_for('itemPage') }}?name=" + encodeURIComponent(itemName);
+        window.open(url, "_blank", "width=600,height=400");
+    }
+    </script>
 </body>
 </html>

@@ -15,10 +15,17 @@
         .recipe {
             margin-top: 50px;
         }
+        nav {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-	<a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
+	<nav>
+        <a class="btn btn-primary mt-3" href="{{ url_for('home') }}" style="width:32%">Home</a>
+        <a class="btn btn-primary mt-3" href="{{ url_for('myFridge') }}" style="width:32%">My Fridge</a>
+        <a class="btn btn-primary mt-3" href="{{ url_for('cameraScanner') }}" style="width:32%">Add Item</a>
+    </nav>
     <div class="container">
         <div class="recipe">
             <h2 class="recipe-heading">{{ recipe.recipeName }}</h2>

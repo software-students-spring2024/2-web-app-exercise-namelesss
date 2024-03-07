@@ -15,27 +15,42 @@
         .recipe {
             margin-top: 50px;
         }
+        nav {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <a href="{{ url_for('home') }}" class="btn btn-primary mt-3" style="position: fixed">Back to Home</a>
+    <nav>
+        <a class="btn btn-primary mt-3" href="{{ url_for('home') }}" style="width:32%">Home</a>
+        <a class="btn btn-primary mt-3" href="{{ url_for('myFridge') }}" style="width:32%">My Fridge</a>
+        <a class="btn btn-primary mt-3" href="{{ url_for('cameraScanner') }}" style="width:32%">Add Item</a>
+    </nav>
     <div class="container">
         <div class="edit-item">
             <h2 class="edit-item-heading">Edit Ingredient</h2>
-            <h5 class="current-values">Here is your current [INGREDIENT NAME] information:</h5>
-            <p><strong>Date Acquired:</strong> [INFO]</p>
-            <p><strong>Estimated Expiration:</strong> [INFO]</p>
-            <p><strong>Quantity:</strong> [INFO]</p>
-
+            <h5 class="current-values">Here is your current {{ item.name }} information:</h5>
+            <p><strong>Date Acquired:</strong> {{ item.dateAcquired|datetime_format }}</p>
+            <p><strong>Estimated Expiration:</strong> {{ item.estimatedExpiration|datetime_format }}</p>
+            <p><strong>Quantity:</strong> {{ item.quantity }} {{ item.unit }}</p>
             <h5 class="input-values">Please Update the values below:</h5>
-            <form method="POST" action="{{ url_for('editIngredient') }}">
+            <form method="POST" action="{{ url_for('itemPage') }}">
+                <input type="hidden" name="name" value="{{ item.name }}">
                 <label for="estimatedExpiration" class="sr-only">Estimated Expiration:</label>
-				<input type="date" id="estimatedExpiration" name="estimatedExpiration" class="form-control" placeholder="Estimated Expiration" required><br>
+                <input type="date" id="estimatedExpiration" name="estimatedExpiration" class="form-control" value="{{ item.estimatedExpiration|datetime_format }}" required><br>
                 <label for="quantity" class="sr-only">Quantity:</label>
-				<input type="number" step="0.01" id="quantity" name="quantity" class="form-control" placeholder="Quantity" required><br>
+                <input type="number" step="0.01" id="quantity" name="quantity" class="form-control" value="{{ item.quantity }}" required><br>
+                <label for="unit" class="sr-only">Unit:</label>
+                <input type="text" id="unit" name="unit" class="form-control" value="{{ item.unit }}" required><br>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+            </form>
+            <hr>
+            <h5>Delete Ingredient</h5>
+            <p>Click the button below to delete this ingredient from your fridge.</p>
+            <form method="POST" action="{{ url_for('deleteIngredient') }}" onsubmit="return confirm('Are you sure you want to delete this ingredient?');">
+                <input type="hidden" name="name" value="{{ item.name }}">
+                <button type="submit" class="btn btn-danger">Delete Ingredient</button>
             </form>
         </div>
     </div>
-
 </body>
